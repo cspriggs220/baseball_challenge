@@ -150,6 +150,35 @@
 
     }); // end click
 
+//************* Reset Button Click **************************
+
+    // click on reset button to reset fields
+    $('#resetTeam').click(function(){
+
+      // $('#teamModal').removeClass('hide');
+      // $("#teamModal").modal("show");
+      // $('#teamModal').data('modal').isShown = false
+
+
+      $("#teamForm input").val("");
+
+      $(".validatr-message").hide();
+
+    });//end click
+
+    $('#x-close').click(function(){
+
+      // $('#teamModal').removeClass('hide');
+      // $("#teamModal").modal("show");
+      // $('#teamModal').data('modal').isShown = false
+
+
+      $("#teamForm input").val("");
+
+      $(".validatr-message").hide();
+
+    });//end click
+
 // *********************** reset season ************************
 
     // click event on reset season link
@@ -807,7 +836,7 @@
     <!-- team form modal -->
     <div id="teamModal" class="modal hide fade">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" id="x-close" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>Team Information</h3>
       </div>
       <div class="modal-body">
@@ -854,8 +883,10 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button id="createTeam" class="btn btn-primary" type="submit" aria-hidden="true" form="teamForm">Submit</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <!-- Change Close button to to Reset/Changed 'button' to 'input' deleted end tag/Add type="reset" value="Reset"/Swithed button order -->
+        <input id="resetTeam" type="reset" value="Reset" class="btn">
+        <!-- Added value="Submit" -->
+        <input id="createTeam" class="btn btn-primary" type="submit" value="Submit" aria-hidden="true" form="teamForm">
       </div>
     </div><!-- end #teamModal -->
 
