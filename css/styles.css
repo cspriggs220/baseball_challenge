@@ -105,7 +105,7 @@ form#scoreForm input {
   width: 25px;
   margin: 0 25px;
 }
-div#resetModal, div#seasonModal {
+div#resetModal, div#seasonModal, div#replayModal {
   text-align: center;
   z-index: 9999;
 }

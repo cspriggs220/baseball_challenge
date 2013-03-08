@@ -150,15 +150,10 @@
 
     }); // end click
 
-//************* Reset Button Click **************************
+//************* Create Team Form Reset Button Click **************************
 
     // click on reset button to reset fields
     $('#resetTeam').click(function(){
-
-      // $('#teamModal').removeClass('hide');
-      // $("#teamModal").modal("show");
-      // $('#teamModal').data('modal').isShown = false
-
 
       $("#teamForm input").val("");
 
@@ -166,12 +161,8 @@
 
     });//end click
 
+    // click on the 'x' in the modal to reset fields
     $('#x-close').click(function(){
-
-      // $('#teamModal').removeClass('hide');
-      // $("#teamModal").modal("show");
-      // $('#teamModal').data('modal').isShown = false
-
 
       $("#teamForm input").val("");
 
@@ -321,6 +312,9 @@
 
     function loadPage() {
 
+      // hide replay season button
+      $("#replaybutton").hide();
+
       // retrieve game data from server
       $.ajax({
         url: "/backliftapp/game",
@@ -414,6 +408,7 @@
         $("#standings tbody").append("<tr><th class='rank'>" + (l + 1) + ".</th><td class='name'><a class='teamInfo' href='#' title='" + popoverTitle + "' data-content='" + popoverContent + "'>" + sort[l].teamName + "</a></td><td class='record'>" + sort[l].wins + "</td><td class='record'>" + sort[l].losses + "</td><td class='record'>" + winPercentage + "</td><td class='deleteColumn'><button id='" + sort[l].id + "' class='btn btn-danger btn-mini delete' type='button'>Delete</button></td></tr>");
 
       }; // end for loop
+
 
     }; // end updateStandings
 
@@ -534,7 +529,14 @@
 
           }; // end while loop
 
+
         }; // end for loop
+          
+          var totalGames = schedule.length * schedule[0].length;
+
+            if (totalGames == scores.length) {
+              $('#replaybutton').show();
+            };
 
         // set active pane
         if (activePane) { // maintain active pane
@@ -736,6 +738,75 @@
 
     }; // end startSeason
 
+// *********************** replay season ************************
+
+    $('#replaySubmit').click(function(){
+
+      // update lock status on server
+      $.ajax({
+        url: "/backliftapp/season/cc55261d-117a-4efc-99ff-bb81e80bab43",
+        type: "PUT",
+        dataType: "JSON",
+        data: {
+          lock: "N"
+        },
+        success: function (data) {
+
+          // delete all game data from server
+          for (var i = 0; i < scores.length; i ++) {
+            $.ajax({
+              url: "/backliftapp/game/" + scores[i].id,
+              type: "DELETE",
+              dataType: "JSON",
+              success: function (data) {
+                // show report score links
+                $("td.final").each(function() {
+                  var contents = $(this).text();
+                  if (contents == "0 - 0") {
+                    $(this).next(".report").children(".score").show();
+                  };
+                });//end each
+              }//end success
+            });
+          };// end for loop
+
+          // reset league wins+losses+percentage from server
+          for (var i = 0; i < league.length; i ++) {
+            $.ajax({
+              url: "/backliftapp/team/" + league[i].id,
+              type: "PUT",
+              dataType: "JSON",
+              data: {
+                wins: 0,
+                losses: 0,
+                percentage: 0
+              }
+            });
+          };// end for loop
+
+        }//end success
+      }); // end Lock N PUT
+
+      // update lock status on server
+      $.ajax({
+        url: "/backliftapp/season/cc55261d-117a-4efc-99ff-bb81e80bab43",
+        type: "PUT",
+        dataType: "JSON",
+        data: {
+          lock: "Y"
+        },
+        success: function (data) {
+
+          // restore game and league data
+          loadPage();
+
+        }
+      }); // end Lock Y PUT
+
+      alert("The time is nigh!");
+
+    });//end Submit click
+
 // ************************ end script ************************
 
   }); // end ready
@@ -828,8 +899,15 @@
 
     <!-- start season button -->
     <div class="row-fluid">
-      <div id="startSeason" class="span12">
+      <div id="startSeason" class="span6 pull-left" >
         <a class="btn btn-primary btn-large" href="#seasonModal" data-toggle="modal">Start Season!</a>
+      </div>
+    </div>
+
+    <!-- replay season button -->
+    <div class="row-fluid">
+      <div id="replaybutton" class="span6 pull-right">
+        <a class="btn btn-primary btn-large btn-success" href="#replayModal" data-toggle="modal">Replay Season</a>
       </div>
     </div>
 
@@ -924,6 +1002,17 @@
         <button class="btn" data-dismiss="modal" aria-hidden="true">No, not yet.</button>
       </div>
     </div><!-- end #seasonModal -->
+
+    <!-- Replay season modal -->
+    <div id="replayModal" class="modal hide fade">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Are you sure you want to replay the season?</h4>
+        <p class="text-error">This will erase all scores you have reported,<br />as well as the league standings as they were prior to Week 1.</p>
+        <button id="replaySubmit" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Yes, I'm sure.</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">No way, man!</button>
+      </div>
+    </div><!-- end #replayModal -->
 
     <!-- reset season modal -->
     <div id="resetModal" class="modal hide fade">
