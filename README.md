@@ -52,3 +52,16 @@ Additional technical information:<br />
   <li>we have dedicated functions that refresh our standings and schedule tables, respectively</li>
   <li>we attempted to structure our script by the order in which elements are loaded into the DOM; when no logical ordering was apparent, we prioritized the sections by which elements users would interact with first</li>
 </ul>
+
+Updated Fixes:<br />
+
+<ul>
+  <li>Fixed the 'Create Team' form validation errors associated with closing the modal before pressing submit, only to return to the previously filled out form full of team info and validation errors.</li>
+</ul>
+
+Updated Features:<br />
+
+<ul>
+  <li>Added 'Reset' button in 'Create Team' modal to reset the form, which clears all inputs and validation errors.  Added this functionality for an alternative to just closing when unsatisfied with the new team info, and for convenience.</li>
+  <li>Added a 'Replay Season' feature that as soon as the season is completed, the 'Replay Season' button appears. When clicked, the user can reset the season data (i.e. wins, losses, game scores) to how they were before the first game was played.</li>
+</ul>
